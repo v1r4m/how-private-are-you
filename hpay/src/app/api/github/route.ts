@@ -10,7 +10,6 @@ export async function GET(
   console.log(req);
   const userName = 'v1r4m';
 //  const userName = req.body.userName;
-  console.log(githubToken);
 
   const graphqlQuery = `
     query ($userName: String!) {
@@ -20,6 +19,13 @@ export async function GET(
             totalContributions
           }
           commitContributionsByRepository {
+            repository {
+              name
+              owner {
+                login
+              }
+              isPrivate
+            }
             contributions {
               totalCount
             }
@@ -47,7 +53,21 @@ export async function GET(
       }
     );
 
-    return Response.json(response.data); //가공해서 클라로 보내야함
+    const data = response.data;
+    const totalCommit = data.data.user.contributionsCollection.contributionCalendar.totalContributions;
+    let totalPublicCommit = 0;
+    for (const commitContributionsByRepository of data.data.user.contributionsCollection.commitContributionsByRepository) {
+      if(commitContributionsByRepository.repository.isPrivate === false) {
+        totalPublicCommit += commitContributionsByRepository.contributions.totalCount;
+      }
+    }
+
+    const result = {
+      totalCommit,
+      totalPublicCommit
+    };
+
+    return Response.json(result);
   } catch (e) {
     console.log(e);
   }
