@@ -1,15 +1,12 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
 
-
 export async function GET(
-  req: NextApiRequest,
+  req: NextRequest,
 ) {
   const githubApiUrl = 'https://api.github.com/graphql';
   const githubToken = process.env.GITHUB_TOKEN;
-  console.log(req);
-  const userName = 'v1r4m';
-//  const userName = req.body.userName;
+  const userName = req.nextUrl.searchParams.get('userName');
 
   const graphqlQuery = `
     query ($userName: String!) {
@@ -67,8 +64,8 @@ export async function GET(
       totalPublicCommit
     };
 
-    return Response.json(result);
+    return NextResponse.json(result);
   } catch (e) {
-    console.log(e);
+    console.log(e); //너무 개떡같은 예외처리지만 일단 지금은 홀드..
   }
 }

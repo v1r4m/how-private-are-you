@@ -9,8 +9,7 @@ const GraphApp = () => {
   const github = async () => {
     const userName = 'v1r4m';
     try {
-      const response = await axios.get('/api/github');
-      console.log(response.data);
+      const response = await axios.get('/api/github', {params: {userName}});
       setData(response.data);
     } catch (e) {
       console.log(e);
