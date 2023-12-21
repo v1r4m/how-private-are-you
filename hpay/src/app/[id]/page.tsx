@@ -2,12 +2,13 @@
 'use client';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
 
 const GraphApp = () => {
   const [data, setData] = useState(null);
+  const userName = usePathname().substring(1);
 
   const github = async () => {
-    const userName = 'v1r4m';
     try {
       const response = await axios.get('/api/github', {params: {userName}});
       setData(response.data);
